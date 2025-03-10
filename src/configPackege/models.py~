@@ -1,0 +1,66 @@
+from datetime import datetime
+
+from src.configPackege.config import db, app
+
+class CryptoCurrency(db.Model):
+    __tablename__ = 'crypto_currencies'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    symbol = db.Column(db.String(20), nullable=False, unique=True)
+    price = db.Column(db.Float, nullable=False)
+    market_cap = db.Column(db.Float, nullable=False)
+    volume_24h = db.Column(db.Float, nullable=False)
+    percent_change_1h = db.Column(db.Float, nullable=False)
+    percent_change_24h = db.Column(db.Float, nullable=False)
+    percent_change_7d = db.Column(db.Float, nullable=False)
+
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    is_custom = db.Column(db.Boolean, default=False, nullable=False)
+    def __init__(self, name, symbol, price, market_cap, volume_24h, percent_change_1h, percent_change_24h, percent_change_7d, updated_at, is_custom):
+        self.name = name
+        self.symbol = symbol
+        self.price = price
+        self.market_cap = market_cap
+        self.volume_24h = volume_24h
+        self.percent_change_1h = percent_change_1h
+        self.percent_change_24h = percent_change_24h
+        self.percent_change_7d = percent_change_7d
+        self.updated_at=updated_at
+        self.is_custom = is_custom
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "symbol": self.symbol,
+            "price": self.price,
+            "market_cap": self.market_cap,
+            "volume_24h": self.volume_24h,
+            "percent_change_1h": self.percent_change_1h,
+            "percent_change_24h": self.percent_change_24h,
+            "percent_change_7d": self.percent_change_7d,
+            "updated_at": self.updated_at,
+            "is_custom":self.is_custom
+        }
+
+
+class CryptoAsset(db.Model):  # Новая таблица
+    __tablename__ = 'crypto_assets'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    symbol = db.Column(db.String(10), unique=True, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    market_cap = db.Column(db.Float, nullable=False)
+    volume_24h = db.Column(db.Float, nullable=False)
+    percent_change_1h = db.Column(db.Float, nullable=False)
+    percent_change_24h = db.Column(db.Float, nullable=False)
+    percent_change_7d = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
+
+with app.app_context():
+    db.create_all()
+    print("✅ Tables created successfully!")

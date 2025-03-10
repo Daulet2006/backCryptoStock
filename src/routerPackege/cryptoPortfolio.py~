@@ -1,0 +1,79 @@
+from flask import Blueprint, jsonify, request
+from src.configPackege.config import db
+from src.configPackege.models import CryptoAsset
+
+router = Blueprint('crypto_assets', __name__, url_prefix='/crypto_assets')
+
+
+@router.route('/getAll', methods=['GET'])
+def get_all_assets():
+    assets = CryptoAsset.query.all()
+    if not assets:
+        return jsonify({"messege":"DB is null"}),404
+    list_asset = []
+    for asset in assets:
+        result =[ asset.to_dict()]
+        list_asset.append(result)
+        return jsonify(list_asset), 200
+
+
+@router.route('/get/<int:id>', methods=['GET'])
+def get_asset_by_id(id):
+    asset = CryptoAsset.query.get(id)  # Ищем запись по ID
+    if not asset:
+        return jsonify({"error": "Asset not found"}), 404  # Если не найдено, возвращаем ошибку
+    return jsonify(asset.to_dict()), 200
+
+
+@router.route('/add', methods=['POST'])
+def add_asset():
+    data = request.get_json()
+
+    # Проверяем, есть ли уже такой символ в базе
+    existing_asset = CryptoAsset.query.filter_by(symbol=data['symbol']).first()
+    if existing_asset:
+        return jsonify({"error": "Asset with this symbol already exists"}), 400
+
+    new_asset = CryptoAsset(
+        name=data['name'],
+        symbol=data['symbol'],
+        price=data['price'],
+        market_cap=data['market_cap'],
+        volume_24h=data['volume_24h'],
+        percent_change_1h=data['percent_change_1h'],
+        percent_change_24h=data['percent_change_24h'],
+        percent_change_7d=data['percent_change_7d']
+    )
+
+    db.session.add(new_asset)
+    db.session.commit()
+
+    return jsonify(new_asset.to_dict()), 201
+
+
+
+@router.route('/update/<int:id>', methods=['PUT'])
+def update_asset(id):
+    asset = CryptoAsset.query.get(id)
+    if not asset:
+        return jsonify({"error": "Asset not found"}), 404
+
+    data = request.json
+
+    for key, value in data.items():
+        if hasattr(asset, key):
+            setattr(asset, key, value)
+
+    db.session.commit()
+    return jsonify({"message": "Asset updated successfully!"}), 200
+
+
+@router.route('/delete/<int:id>', methods=['DELETE'])
+def delete_asset(id):
+    asset = CryptoAsset.query.get(id)
+    if not asset:
+        return jsonify({"error": "Asset not found"}), 404
+
+    db.session.delete(asset)
+    db.session.commit()
+    return jsonify({"message": "Asset deleted successfully!"}), 200

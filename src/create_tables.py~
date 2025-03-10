@@ -1,0 +1,5 @@
+from src.configPackege.config import db
+from src.configPackege.models import CryptoCurrency
+
+db.create_all()
+print("Tables created successfully!")

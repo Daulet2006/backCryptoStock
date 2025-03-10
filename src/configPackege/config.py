@@ -1,0 +1,19 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+import os
+from dotenv import load_dotenv
+
+load_dotenv("../../.env")
+
+class Settings(BaseSettings):
+    CMC_API_KEY: str
+    model_config = SettingsConfigDict(env_file="../../.env", env_file_encoding="utf-8")
+
+settings = Settings()
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)  # Инициализируем базу данных сразу с `app`
