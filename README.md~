@@ -1,0 +1,71 @@
+# Crypto Portfolio API
+
+## Overview
+This is a Flask-based RESTful API for managing cryptocurrency data and user portfolios. The API provides endpoints to retrieve, add, update, and delete cryptocurrency assets. It also integrates with external APIs for real-time crypto market data.
+
+## Features
+- RESTful API built with Flask
+- Cross-Origin Resource Sharing (CORS) enabled
+- CRUD operations for cryptocurrency assets
+- Integration with external crypto data providers
+- PostgreSQL database for storing portfolio data
+- Organized using Blueprints for modular routing
+
+## Installation
+
+### Prerequisites
+Ensure you have the following installed:
+- Python 3.8+
+- PostgreSQL
+- Virtual Environment (optional but recommended)
+
+### Clone Repository
+$ git clone <repository-url>
+$ cd crypto-portfolio-api
+
+### Create Virtual Environment (Optional)
+$ python -m venv venv
+$ source venv/bin/activate   # On Windows use: venv\Scripts\activate
+
+### Install Dependencies
+$ pip install -r requirements.txt
+
+## Configuration
+Update config.py with your database connection and API keys.
+
+## Database Setup
+Run the following to create database tables:
+$ python
+>>> from src.configPackege.config import db, app
+>>> with app.app_context():
+...     db.create_all()
+...     print("✅ Tables created successfully!")
+
+## Running the Application
+Start the Flask server:
+$ python main.py
+By default, the app runs on http://127.0.0.1:5000/
+
+## API Endpoints
+### Crypto Assets
+| Method | Endpoint | Description |
+|--------|---------|-------------|
+| GET | /crypto_assets/getAll | Retrieve all crypto assets |
+| GET | /crypto_assets/get/<id> | Get asset by ID |
+| POST | /crypto_assets/add | Add a new asset |
+| PUT | /crypto_assets/update/<id> | Update an existing asset |
+| DELETE | /crypto_assets/delete/<id> | Delete an asset |
+
+## Technologies Used
+- Flask (Backend framework)
+- Flask-CORS (Cross-Origin support)
+- PostgreSQL (Database)
+- SQLAlchemy (ORM)
+- Requests (HTTP requests)
+- Pydantic (Data validation)
+
+## Contribution
+Feel free to fork the repository and submit pull requests. Contributions are welcome!
+
+## License
+This project is licensed under the MIT License.
